@@ -12,6 +12,10 @@ class fp():
     """
     def __init__(self, data, perm, N, mode='NULL'):
         self.data = [data[perm[0]],data[perm[1]],data[perm[2]],data[perm[3]]]
+        #pdb.set_trace()
+        self.normFac = sum(self.data)
+        self.data = (self.data / self.normFac) if mode=='NORM' else self.data
+
         self.perm = perm
         self.N    = N
         self.mode = mode
@@ -31,7 +35,7 @@ class manyfp():
         self.fpObjs = [fp(data[i], perm, N, mode) for i in range(len(data))]
 
 
-def runPermute(N, perm, data):
+def runPermute(N, perm, data, mode):
     """
     Run a single permutation
     """
@@ -40,9 +44,9 @@ def runPermute(N, perm, data):
     versicolor = data[60:80]
     virginica  = data[110:130]
 
-    setoObj = manyfp(setosa    , perm, N)
-    vesiObj = manyfp(versicolor, perm, N)
-    virgObj = manyfp(virginica , perm, N)
+    setoObj = manyfp(setosa    , perm, N, mode)
+    vesiObj = manyfp(versicolor, perm, N, mode)
+    virgObj = manyfp(virginica , perm, N, mode)
 
     #pdb.set_trace()
 
@@ -68,7 +72,7 @@ def runPermute(N, perm, data):
 
 
 
-def runManyPermute(N, perms, data):
+def runManyPermute(N, perms, data, mode):
     """
     Run many permutations
     """
@@ -80,9 +84,9 @@ def runManyPermute(N, perms, data):
     for p in range(len(perms)):
         perm = perms[p]
         
-        setoObj = manyfp(setosa    , perm, N)
-        vesiObj = manyfp(versicolor, perm, N)
-        virgObj = manyfp(virginica , perm, N)
+        setoObj = manyfp(setosa    , perm, N, mode)
+        vesiObj = manyfp(versicolor, perm, N, mode)
+        virgObj = manyfp(virginica , perm, N, mode)
 
         plt.figure(3)
         plt.title(str(perm), fontsize=8)
@@ -112,14 +116,15 @@ def main():
 
     N    = 128
     cols = [0,1,2,3]
-    p    = 8
+    p    = 0
+    mode='NORM'
    
     data  = np.loadtxt('iris.csv', usecols=cols, delimiter=',')
 
     perms = list(itertools.permutations(cols))
 
-    runPermute(N, perms[p], data)
-    runManyPermute(N, perms, data)
+    runPermute(N, perms[p], data, mode)
+    runManyPermute(N, perms, data, mode)
 
 
 
